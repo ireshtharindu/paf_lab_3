@@ -148,5 +148,94 @@ public class Item {
 	 }
 	return output;
 	}
+	
+	//Update Item
+	
+			public String updateItem(int id, String code, String name, String price, String desc)
+			{
+				String output = "";
+				try
+				{
+					Connection con = connect();
+					if (con == null)
+					{
+						return "Error while connecting to the database";
+					}
+
+					// create a prepared statement
+					
+					String query = "update item set `itemCode`=?,`itemName`=?,`itemPrice`=?,`itemDesc`=? where `itemID`=?";
+					PreparedStatement preparedStmt = con.prepareStatement(query);
+
+					// binding values
+					preparedStmt.setString(1, code);
+					preparedStmt.setString(2, name);
+					preparedStmt.setDouble(3, Double.parseDouble(price));
+					preparedStmt.setString(4, desc);
+					preparedStmt.setInt(5, id);
+
+					//execute the statement
+					preparedStmt.executeUpdate();
+					con.close();
+					output = "Item " + id + " Updated successfully";
+				}
+				catch (Exception e)
+				{
+					output = "Error while updating";
+					System.err.println(e.getMessage());
+				}
+				return output;
+			}
+			
+			//View Item
+			public String viewItem(int id)
+			{
+				String output = "";
+				try
+				{
+					Connection con = connect();
+					if (con == null)
+					{
+						return "Error while connecting to the database for reading.";
+					}
+
+					String query = "select * from item where `itemID`=?;";
+					PreparedStatement preparedStmt = con.prepareStatement(query);
+
+					// binding values
+					preparedStmt.setInt(1, id);
+					ResultSet rs = preparedStmt.executeQuery();
+
+					// iterate through the rows in the result set
+					if (rs.next())
+					{
+						String itemID = Integer.toString(rs.getInt("itemID"));
+						String itemCode = rs.getString("itemCode");
+						String itemName = rs.getString("itemName");
+						String itemPrice = Double.toString(rs.getDouble("itemPrice"));
+						String itemDesc = rs.getString("itemDesc");
+
+						output += "<form method='post' action='Items.jsp'> "
+								+ "Item code: <input name='itemCode' type='text' class='form-control' value='"+ itemCode +"'><br>" 
+								+ "Item name: <input name='itemName' type='text' class='form-control' value='"+ itemName +"'><br> "
+								+ "Item price: <input name='itemPrice' type='text' class='form-control' value='"+ itemPrice +"'><br> "
+								+ "Item description: <input name='itemDesc' type='text' class='form-control' value='"+ itemDesc +"'><br> "
+								+ "<input name='action' value='update' type='hidden'> "
+								+ "<input name='itemID' class='form-control' value='"+ itemID +"' type='hidden'> "
+								+ "<input name='btnSubmit' type='submit' class='btn btn-secondary' value='Update Item "+ id +"'> "
+								+ "</form> <br>"
+								+ "<a href='Items.jsp'>Cancel Updating</a>";
+					}
+
+					con.close();
+				}
+				catch (Exception e)
+				{
+					output = "Error while reading the selected item.\nGo back to <a href='items.jsp'>Items.jsp</a>";
+					System.err.println(e.getMessage());
+				}
+				return output;
+			}
+
 
 }

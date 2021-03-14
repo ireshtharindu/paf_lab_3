@@ -3,25 +3,28 @@
 pageEncoding="ISO-8859-1"%>
 
 <%
-//Insert item----------------------------------
-if (request.getParameter("itemCode") != null)
-{
-Item itemObj = new Item();
+		//Insert item----------------------------------
+			if (request.getParameter("itemCode") != null)
+			{
+					Item itemObj = new Item();
+			
+					String stsMsg = itemObj.insertItem(request.getParameter("itemCode"),
+						request.getParameter("itemName"),
+						request.getParameter("itemPrice"),
+						request.getParameter("itemDesc"));
+						session.setAttribute("statusMsg", stsMsg);
+			}
 
-String stsMsg = itemObj.insertItem(request.getParameter("itemCode"),
-	request.getParameter("itemName"),
-	request.getParameter("itemPrice"),
-	request.getParameter("itemDesc"));
-session.setAttribute("statusMsg", stsMsg);
-}
-//Delete item----------------------------------
 
-if (request.getParameter("itemID") != null)
-{
-Item itemObj2 = new Item();
-String stsMsg2 = itemObj2.deleteItem(request.getParameter("itemID"));
-session.setAttribute("statusMsg", stsMsg2);
-} 
+
+			//Delete item----------------------------------
+			
+			if (request.getParameter("itemID") != null)
+			{
+			Item itemObj2 = new Item();
+			String stsMsg2 = itemObj2.deleteItem(request.getParameter("itemID"));
+			session.setAttribute("statusMsg", stsMsg2);
+			} 
 
 
 
@@ -32,10 +35,16 @@ session.setAttribute("statusMsg", stsMsg2);
 <head>
 <meta charset="ISO-8859-1">
 <title>Items Management</title>
+<link rel="stylesheet" href="views/bootstrap.min.css">
 </head>
 <body>
 
 <h1>Items Management</h1>
+
+		<div class="container">
+				 <div class="row">
+				 <div class="col">
+				 
 <form method="post" action="items.jsp">
 Item code: <input name="itemCode" type="text"><br> Item
 name: <input name="itemName" type="text"><br> Item price:
@@ -51,5 +60,9 @@ out.print(session.getAttribute("statusMsg"));
 Item itemObj = new Item();
 out.print(itemObj.readItems());
 %>
+
+</div>
+			 </div>
+			</div>
 </body>
 </html>
